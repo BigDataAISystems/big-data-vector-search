@@ -1,0 +1,73 @@
+{
+  "experiment": "v1_exact_search",
+  "timestamp": "2026-10-24T09:42:06",
+  "status": "SUCCESS",
+  "subset": "msmarco_50k",
+  "documents": 50000,
+  "queries": 300,
+  "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+  "embedding_dimension": 384,
+  "normalized_embeddings": true,
+  "index_type": "IndexFlatIP",
+  "distance_metric": "inner_product_on_l2_normalized_vectors",
+  "batch_size": 64,
+  "saved_top_k": 10,
+  "benchmark_seed": 42,
+  "provenance": {
+    "hash_algorithm": "sha256",
+    "corpus_file": "C:\\Users\\mahdi\\Documents\\GitHub\\big-data-vector-search\\data\\processed\\msmarco_50k\\corpus.jsonl",
+    "corpus_sha256": "dcebad01c339e3e8d7daed941c7b209e4c6e9ae9ab77477e8445e4cd3324b070",
+    "queries_file": "C:\\Users\\mahdi\\Documents\\GitHub\\big-data-vector-search\\data\\processed\\queries.jsonl",
+    "queries_sha256": "b678baf1538257869a7e0357db2640b5cc9f58247eaff6a3656faefeab755c38",
+    "qrels_file": "C:\\Users\\mahdi\\Documents\\GitHub\\big-data-vector-search\\data\\processed\\qrels.json",
+    "qrels_sha256": "dcc476a0e0191ba7068f739f20835cb11da787351100ca6ad14acc160b6e3b08",
+    "manifest_file": "C:\\Users\\mahdi\\Documents\\GitHub\\big-data-vector-search\\data\\processed\\benchmark_manifest.json",
+    "manifest_sha256": "ad003ee5768f7d563b759c51157ab60c962e204a7f79018f657d683329109ff8",
+    "fingerprint_time_sec": 0.120303
+  },
+  "timing": {
+    "benchmark_load_time_sec": 0.609434,
+    "model_load_time_sec": 1.45004,
+    "document_embedding_time_sec": 1744.18185,
+    "document_embedding_docs_per_sec": 28.666736,
+    "index_build_time_sec": 0.031574,
+    "query_embedding_time_sec": 1.152625,
+    "query_embedding_per_query_ms": 3.842083,
+    "search_wall_time_sec": 2.370858,
+    "search_queries_per_sec": 126.536496,
+    "total_experiment_time_sec": 1750.147013
+  },
+  "search_latency_ms": {
+    "mean": 7.873929,
+    "median": 7.47705,
+    "p95": 10.11391,
+    "p99": 10.969761,
+    "min": 6.3743,
+    "max": 12.2728
+  },
+  "retrieval_quality": {
+    "recall_at_1": 0.805,
+    "hit_rate_at_1": 0.826667,
+    "recall_at_5": 0.956667,
+    "hit_rate_at_5": 0.956667,
+    "recall_at_10": 0.98,
+    "hit_rate_at_10": 0.98
+  },
+  "storage": {
+    "raw_embedding_bytes": 76800000,
+    "raw_embedding_mb": 73.242188,
+    "serialized_index_bytes": 76800045,
+    "serialized_index_mb": 73.24223
+  },
+  "memory": {
+    "max_observed_python_rss_mb": 842.679688
+  },
+  "environment": {
+    "python_version": "3.11.9",
+    "python_executable": "C:\\Users\\mahdi\\Documents\\GitHub\\big-data-vector-search\\.venv\\Scripts\\python.exe",
+    "platform": "Windows-10-10.0.26300-SP0",
+    "cpu_count": 8,
+    "numpy_version": "2.4.6",
+    "faiss_version": "1.15.1"
+  }
+}

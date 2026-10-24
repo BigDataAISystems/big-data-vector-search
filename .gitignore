@@ -218,3 +218,19 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Big Data Vector Search generated artifacts
+data/raw/
+data/processed/
+data/embeddings/
+data/indexes/
+
+# Experiment scratch/cache
+.cache/
+tmp/
+
+# Large generated vector/index files
+*.faiss
+*.index
+*.npy
+*.npz
