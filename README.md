@@ -1,4 +1,4 @@
-﻿# Big Data Vector Search
+# Big Data Vector Search
 
 **Scalable Semantic Search and Approximate Nearest Neighbor Systems**
 
@@ -8,7 +8,7 @@ The project progresses from an exact semantic-search baseline toward **Approxima
 
 The central systems tradeoff is:
 
-**Recall â†” Latency â†” Memory â†” Index Build Cost**
+**Recall <-> Latency <-> Memory <-> Index Build Cost**
 
 ---
 
@@ -16,8 +16,8 @@ The central systems tradeoff is:
 
 | Version | Focus | Status |
 |---|---|---|
-| **V1** | Exact Vector Search Baseline | âœ… Complete |
-| **V2** | Approximate Nearest Neighbor Indexes | â³ Next |
+| **V1** | Exact Vector Search Baseline | **Complete** |
+| **V2** | Approximate Nearest Neighbor Indexes | **Next** |
 | **V3** | Large-Scale Vector Search | Planned |
 | **V4** | Index Parameter Optimization | Planned |
 | **V5** | Distributed Embedding & Index Construction | Planned |
@@ -26,7 +26,7 @@ The central systems tradeoff is:
 
 ---
 
-# V1 â€” Exact Vector Search Baseline
+# V1 - Exact Vector Search Baseline
 
 **Status: COMPLETE**
 
@@ -43,7 +43,7 @@ V1 establishes a controlled exact-search baseline using:
 
 The benchmark scales through:
 
-**1K â†’ 10K â†’ 25K â†’ 50K â†’ 100K documents**
+**1K -> 10K -> 25K -> 50K -> 100K documents**
 
 while keeping the evaluation workload fixed.
 
@@ -53,21 +53,29 @@ while keeping the evaluation workload fixed.
 
 ```text
 MS MARCO
-    â†“
+    |
+    v
 Controlled Nested Corpora
-    â†“
+    |
+    v
 Sentence Transformer
-    â†“
+    |
+    v
 Normalized 384-D Embeddings
-    â†“
+    |
+    v
 FAISS IndexFlatIP
-    â†“
+    |
+    v
 300 Fixed Query Embeddings
-    â†“
+    |
+    v
 Exact Top-K Search
-    â†“
+    |
+    v
 Recall + Latency + Memory + Storage
-    â†“
+    |
+    v
 Validated Exact Neighbor Ground Truth
 ```
 
@@ -105,7 +113,7 @@ The source corpus contains approximately **8.84 million documents/passages**.
 
 A controlled nested benchmark is generated:
 
-**1K âŠ‚ 10K âŠ‚ 25K âŠ‚ 50K âŠ‚ 100K**
+**1K subset of 10K subset of 25K subset of 50K subset of 100K**
 
 The benchmark uses:
 
@@ -182,22 +190,22 @@ The final current-provenance experimental results are:
 
 # V1 Scaling Summary
 
-Scaling the collection from **1K to 100K documents** represents a **100Ã— increase in corpus size**.
+Scaling the collection from **1K to 100K documents** represents a **100x increase in corpus size**.
 
 Measured scaling:
 
 | Measurement | Growth |
 |---|---:|
-| Corpus size | **100.00Ã—** |
-| Embedding time | **108.47Ã—** |
-| Index size | **100.00Ã—** |
-| Mean search latency | **110.40Ã—** |
-| P95 search latency | **105.34Ã—** |
-| Python RSS | **1.83Ã—** |
+| Corpus size | **100.00x** |
+| Embedding time | **108.47x** |
+| Index size | **100.00x** |
+| Mean search latency | **110.40x** |
+| P95 search latency | **105.34x** |
+| Python RSS | **1.83x** |
 
 ---
 
-# Key Finding 1 â€” Embedding Dominates Offline Processing
+# Key Finding 1 - Embedding Dominates Offline Processing
 
 Document embedding is the dominant preprocessing cost.
 
@@ -226,7 +234,7 @@ This indicates approximately linear document-embedding scaling under the tested 
 
 ---
 
-# Key Finding 2 â€” Exact Index Storage Scales Linearly
+# Key Finding 2 - Exact Index Storage Scales Linearly
 
 The serialized `IndexFlatIP` index grows from:
 
@@ -235,19 +243,19 @@ The serialized `IndexFlatIP` index grows from:
 100K   146.48 MB
 ```
 
-This is effectively a **100Ã— storage increase for a 100Ã— increase in vectors**.
+This is effectively a **100x storage increase for a 100x increase in vectors**.
 
 The result is expected because `IndexFlatIP` retains the complete float32 vector representation.
 
 For a 384-dimensional float32 vector:
 
-**384 Ã— 4 bytes = 1,536 bytes per vector**
+**384 x 4 bytes = 1,536 bytes per vector**
 
 ![V1 Index Size](results/v1_index_size.png)
 
 ---
 
-# Key Finding 3 â€” Exact Search Latency Becomes Increasingly Expensive
+# Key Finding 3 - Exact Search Latency Becomes Increasingly Expensive
 
 Mean exact-search latency grows from:
 
@@ -259,9 +267,9 @@ Mean exact-search latency grows from:
 100K    17.649 ms/query
 ```
 
-From 1K to 100K, mean search latency increases approximately **110.40Ã—**.
+From 1K to 100K, mean search latency increases approximately **110.40x**.
 
-P95 latency grows from **0.226 ms** to **23.755 ms**, or approximately **105.34Ã—**.
+P95 latency grows from **0.226 ms** to **23.755 ms**, or approximately **105.34x**.
 
 This growth motivates the transition from exhaustive exact search to Approximate Nearest Neighbor indexing.
 
@@ -269,7 +277,7 @@ This growth motivates the transition from exhaustive exact search to Approximate
 
 ---
 
-# Key Finding 4 â€” Relevance Recall Declines as the Search Space Grows
+# Key Finding 4 - Relevance Recall Declines as the Search Space Grows
 
 Recall@5 changes from:
 
@@ -283,11 +291,11 @@ Recall@5 changes from:
 
 Recall@1 changes from:
 
-**0.9600 â†’ 0.7333**
+**0.9600 -> 0.7333**
 
 Recall@10 changes from:
 
-**1.0000 â†’ 0.9567**
+**1.0000 -> 0.9567**
 
 The Recall@5 change from 1K to 100K is:
 
@@ -303,11 +311,11 @@ Instead, the increasingly large collection introduces more semantically competit
 
 ---
 
-# Key Finding 5 â€” Memory and Index Size Are Different Measurements
+# Key Finding 5 - Memory and Index Size Are Different Measurements
 
 Maximum observed Python process RSS increases from **639.7 MB** at 1K documents to **1,168.8 MB** at 100K documents.
 
-This represents approximately **1.83Ã— growth**.
+This represents approximately **1.83x growth**.
 
 Process RSS includes:
 
@@ -384,15 +392,20 @@ V1 uses multiple independent validation layers:
 
 ```text
 Benchmark Preparation
-        â†“
+        |
+        v
 Independent Benchmark Validation
-        â†“
+        |
+        v
 Exact Search
-        â†“
+        |
+        v
 SHA-256 Provenance
-        â†“
+        |
+        v
 Exact-Neighbor Validation
-        â†“
+        |
+        v
 Provenance-Aware Scaling Analysis
 ```
 
@@ -415,7 +428,7 @@ The exact-neighbor validator independently recomputes these fingerprints.
 
 If a benchmark artifact changes:
 
-**Experiment fingerprint â‰  Current benchmark fingerprint â†’ validation fails**
+**Experiment fingerprint != Current benchmark fingerprint -> validation fails**
 
 This protection was deliberately tested by modifying a copied fingerprint. The validator correctly rejected the modified experiment record with a nonzero exit status.
 
@@ -437,7 +450,7 @@ The exact-neighbor validator verifies:
 
 - complete query set;
 - exactly 10 neighbors per query;
-- rank sequence 1â€“10;
+- rank sequence 1-10;
 - unique neighbors;
 - corpus membership;
 - finite similarity scores;
@@ -526,7 +539,7 @@ src/analyze_v1_scaling.py
 
 ---
 
-# V2 â€” Approximate Nearest Neighbor Search
+# V2 - Approximate Nearest Neighbor Search
 
 **Status: NEXT**
 
@@ -536,11 +549,12 @@ Planned index architectures include:
 
 ```text
 Exact baseline
-    â†“
+    |
+    v
 HNSW
-    â†“
+
 IVF
-    â†“
+
 IVF-PQ
 ```
 
@@ -565,7 +579,7 @@ For each ANN configuration, V2 will measure:
 
 The central V2 tradeoff is:
 
-**ANN Recall â†” Search Latency â†” Memory**
+**ANN Recall <-> Search Latency <-> Memory**
 
 The V1 exact-neighbor files provide the ground truth required to quantify ANN approximation error.
 
@@ -573,7 +587,7 @@ The V1 exact-neighbor files provide the ground truth required to quantify ANN ap
 
 # Future Roadmap
 
-## V3 â€” Large-Scale Vector Search
+## V3 - Large-Scale Vector Search
 
 Extend experiments toward:
 
@@ -589,7 +603,7 @@ Investigate when exact search becomes operationally impractical and how ANN arch
 
 ---
 
-## V4 â€” Index Parameter Optimization
+## V4 - Index Parameter Optimization
 
 Systematically study parameters such as:
 
@@ -614,7 +628,7 @@ and quantify their effects on recall, latency, memory, and build cost.
 
 ---
 
-## V5 â€” Distributed Embedding & Index Construction
+## V5 - Distributed Embedding & Index Construction
 
 Investigate distributed preprocessing using:
 
@@ -626,7 +640,7 @@ Investigate distributed preprocessing using:
 
 ---
 
-## V6 â€” Cloud / Distributed Vector Search
+## V6 - Cloud / Distributed Vector Search
 
 Evaluate genuine cloud and distributed deployments.
 
@@ -642,7 +656,7 @@ Research questions include scalability, distributed throughput, resource require
 
 ---
 
-## V7 â€” Multi-Objective Vector Search Optimization
+## V7 - Multi-Objective Vector Search Optimization
 
 Investigate automatic vector-index configuration.
 
@@ -709,31 +723,31 @@ The projects therefore share some infrastructure and research themes while addre
 
 ```text
 big-data-vector-search/
-â”‚
-â”œâ”€â”€ README.md
-â”œâ”€â”€ requirements.txt
-â”œâ”€â”€ .gitignore
-â”‚
-â”œâ”€â”€ docs/
-â”‚   â”œâ”€â”€ v1-exact-search-baseline.md
-â”‚   â””â”€â”€ v1-exact-search-results.md
-â”‚
-â”œâ”€â”€ src/
-â”‚   â”œâ”€â”€ prepare_msmarco_benchmark.py
-â”‚   â”œâ”€â”€ validate_v1_benchmark.py
-â”‚   â”œâ”€â”€ evaluate_exact_search.py
-â”‚   â”œâ”€â”€ validate_exact_neighbors.py
-â”‚   â””â”€â”€ analyze_v1_scaling.py
-â”‚
-â”œâ”€â”€ results/
-â”‚   â”œâ”€â”€ v1_exact_*.json
-â”‚   â”œâ”€â”€ v1_exact_neighbors_*.jsonl
-â”‚   â”œâ”€â”€ v1_exact_search_experiments.csv
-â”‚   â”œâ”€â”€ v1_scaling_summary.csv
-â”‚   â””â”€â”€ v1_*.png
-â”‚
-â””â”€â”€ data/
-    â””â”€â”€ generated benchmark data
+|
+|-- README.md
+|-- requirements.txt
+|-- .gitignore
+|
+|-- docs/
+|   |-- v1-exact-search-baseline.md
+|   `-- v1-exact-search-results.md
+|
+|-- src/
+|   |-- prepare_msmarco_benchmark.py
+|   |-- validate_v1_benchmark.py
+|   |-- evaluate_exact_search.py
+|   |-- validate_exact_neighbors.py
+|   `-- analyze_v1_scaling.py
+|
+|-- results/
+|   |-- v1_exact_*.json
+|   |-- v1_exact_neighbors_*.jsonl
+|   |-- v1_exact_search_experiments.csv
+|   |-- v1_scaling_summary.csv
+|   `-- v1_*.png
+|
+`-- data/
+    `-- generated benchmark data
 ```
 
 Large generated benchmark corpora, embeddings, and indexes are excluded from Git and can be regenerated using the provided scripts.
@@ -830,12 +844,12 @@ Scaling from 1K to 100K documents produced:
 
 | Measurement | V1 Scaling |
 |---|---:|
-| Corpus size | **100.00Ã—** |
-| Embedding time | **108.47Ã—** |
-| Index size | **100.00Ã—** |
-| Mean search latency | **110.40Ã—** |
-| P95 search latency | **105.34Ã—** |
-| Python RSS | **1.83Ã—** |
+| Corpus size | **100.00x** |
+| Embedding time | **108.47x** |
+| Index size | **100.00x** |
+| Mean search latency | **110.40x** |
+| P95 search latency | **105.34x** |
+| Python RSS | **1.83x** |
 
 At the same time:
 
@@ -870,7 +884,9 @@ The organization focuses on research and open-source projects at the intersectio
 # Author
 
 **Mahdi Ebrahimi, Ph.D.**
+
 Associate Professor of Computer Science
+
 California State University, Northridge
 
 Research interests include:
@@ -888,6 +904,6 @@ Research interests include:
 
 ## Current Milestone
 
-**V1 â€” Exact Vector Search Baseline: COMPLETE**
+**V1 - Exact Vector Search Baseline: COMPLETE**
 
-**Next: V2 â€” Approximate Nearest Neighbor Search**
+**Next: V2 - Approximate Nearest Neighbor Search**
