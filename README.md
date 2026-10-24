@@ -8,17 +8,7 @@ The project progresses from an exact semantic-search baseline toward **Approxima
 
 The central systems tradeoff is:
 
-\[
-\boxed{
-\text{Recall}
-\leftrightarrow
-\text{Latency}
-\leftrightarrow
-\text{Memory}
-\leftrightarrow
-\text{Index Build Cost}
-}
-\]
+**Recall â†” Latency â†” Memory â†” Index Build Cost**
 
 ---
 
@@ -51,11 +41,9 @@ V1 establishes a controlled exact-search baseline using:
 - **FAISS IndexFlatIP**
 - **exact Top-K nearest-neighbor search**
 
-The benchmark scales from:
+The benchmark scales through:
 
-```text
-1K â†’ 10K â†’ 25K â†’ 50K â†’ 100K documents
-```
+**1K â†’ 10K â†’ 25K â†’ 50K â†’ 100K documents**
 
 while keeping the evaluation workload fixed.
 
@@ -117,26 +105,16 @@ The source corpus contains approximately **8.84 million documents/passages**.
 
 A controlled nested benchmark is generated:
 
-\[
-S_{1K}
-\subset
-S_{10K}
-\subset
-S_{25K}
-\subset
-S_{50K}
-\subset
-S_{100K}
-\]
+**1K âŠ‚ 10K âŠ‚ 25K âŠ‚ 50K âŠ‚ 100K**
 
 The benchmark uses:
 
 ```text
-Evaluation queries:          300
-Random seed:                 42
-Eligible validation queries: 6,980
-Positive qrel pairs:         314
-Required relevant documents: 314
+Evaluation queries:           300
+Random seed:                  42
+Eligible validation queries:  6,980
+Positive qrel pairs:          314
+Required relevant documents:  314
 ```
 
 Every corpus size contains all 314 required relevant documents.
@@ -163,9 +141,9 @@ sentence-transformers/all-MiniLM-L6-v2
 with:
 
 ```text
-Embedding dimension: 384
-Batch size:          64
-Normalization:       L2
+Embedding dimension:  384
+Batch size:           64
+Normalization:        L2
 ```
 
 Because vectors are L2 normalized, inner-product ranking corresponds to cosine-similarity ranking.
@@ -204,13 +182,7 @@ The final current-provenance experimental results are:
 
 # V1 Scaling Summary
 
-Scaling the collection from **1K to 100K documents** represents a:
-
-\[
-100\times
-\]
-
-increase in corpus size.
+Scaling the collection from **1K to 100K documents** represents a **100Ã— increase in corpus size**.
 
 Measured scaling:
 
@@ -232,8 +204,8 @@ Document embedding is the dominant preprocessing cost.
 At 100K documents:
 
 ```text
-Document embedding:   3,314.86 seconds
-Index construction:   ~0.063 seconds
+Document embedding:  3,314.86 seconds
+Index construction:  ~0.063 seconds
 ```
 
 Embedding throughput remains relatively stable across corpus sizes:
@@ -269,9 +241,7 @@ The result is expected because `IndexFlatIP` retains the complete float32 vector
 
 For a 384-dimensional float32 vector:
 
-\[
-384 \times 4 = 1536 \text{ bytes/vector}
-\]
+**384 Ã— 4 bytes = 1,536 bytes per vector**
 
 ![V1 Index Size](results/v1_index_size.png)
 
@@ -289,29 +259,9 @@ Mean exact-search latency grows from:
 100K    17.649 ms/query
 ```
 
-From 1K to 100K, mean search latency increases approximately:
+From 1K to 100K, mean search latency increases approximately **110.40Ã—**.
 
-\[
-110.40\times
-\]
-
-P95 latency grows from:
-
-```text
-0.226 ms
-```
-
-to:
-
-```text
-23.755 ms
-```
-
-or approximately:
-
-\[
-105.34\times
-\]
+P95 latency grows from **0.226 ms** to **23.755 ms**, or approximately **105.34Ã—**.
 
 This growth motivates the transition from exhaustive exact search to Approximate Nearest Neighbor indexing.
 
@@ -333,21 +283,15 @@ Recall@5 changes from:
 
 Recall@1 changes from:
 
-```text
-0.9600 â†’ 0.7333
-```
+**0.9600 â†’ 0.7333**
 
-and Recall@10 changes from:
+Recall@10 changes from:
 
-```text
-1.0000 â†’ 0.9567
-```
+**1.0000 â†’ 0.9567**
 
 The Recall@5 change from 1K to 100K is:
 
-\[
--0.0667
-\]
+**-0.0667**
 
 Importantly, this decline occurs under **exact search**.
 
@@ -361,27 +305,9 @@ Instead, the increasingly large collection introduces more semantically competit
 
 # Key Finding 5 â€” Memory and Index Size Are Different Measurements
 
-Maximum observed Python process RSS increases from:
+Maximum observed Python process RSS increases from **639.7 MB** at 1K documents to **1,168.8 MB** at 100K documents.
 
-```text
-639.7 MB
-```
-
-at 1K documents to:
-
-```text
-1,168.8 MB
-```
-
-at 100K documents.
-
-This represents approximately:
-
-\[
-1.83\times
-\]
-
-growth.
+This represents approximately **1.83Ã— growth**.
 
 Process RSS includes:
 
@@ -412,21 +338,11 @@ Relevance Recall asks:
 
 > Does vector search retrieve documents identified as relevant by the benchmark?
 
-For query \(q\):
+For each query:
 
-\[
-Recall@K_{relevance}(q)
-=
-\frac{
-|\text{Relevant}(q)\cap TopK(q)|
-}{
-|\text{Relevant}(q)|
-}
-\]
+**Relevance Recall@K = relevant documents retrieved in Top-K / total relevant documents**
 
 V1 measures this metric using MS MARCO relevance judgments.
-
----
 
 ## ANN Recall
 
@@ -434,21 +350,13 @@ Future ANN experiments will ask:
 
 > How closely does an approximate index reproduce the exact nearest neighbors?
 
-For query \(q\):
+For each query:
 
-\[
-Recall@K_{ANN}(q)
-=
-\frac{
-|TopK_{ANN}(q)\cap TopK_{Exact}(q)|
-}{
-K
-}
-\]
+**ANN Recall@K = number of shared neighbors between ANN Top-K and Exact Top-K / K**
 
 These metrics answer different questions.
 
-A vector index can reproduce exact neighbors extremely well while the embedding model itself does not rank all benchmark-relevant documents in the Top-K.
+A vector index can have high ANN Recall while still having lower relevance Recall if the embedding model itself ranks non-relevant vectors above benchmark-relevant documents.
 
 V2 will therefore report both metrics separately.
 
@@ -505,15 +413,11 @@ benchmark_manifest.json
 
 The exact-neighbor validator independently recomputes these fingerprints.
 
-If the benchmark changes:
+If a benchmark artifact changes:
 
-```text
-Experiment hash â‰  Current benchmark hash
-```
+**Experiment fingerprint â‰  Current benchmark fingerprint â†’ validation fails**
 
-the artifact is rejected.
-
-This protection was deliberately tested by corrupting a copied fingerprint. The validator correctly rejected the modified experiment record with a nonzero exit status.
+This protection was deliberately tested by modifying a copied fingerprint. The validator correctly rejected the modified experiment record with a nonzero exit status.
 
 ---
 
@@ -631,7 +535,7 @@ V2 will introduce Approximate Nearest Neighbor indexes and compare them against 
 Planned index architectures include:
 
 ```text
-IndexFlatIP
+Exact baseline
     â†“
 HNSW
     â†“
@@ -650,28 +554,18 @@ The primary V2 question is:
 
 For each ANN configuration, V2 will measure:
 
-```text
-ANN Recall@K
-Relevance Recall@K
-Mean Search Latency
-Median Search Latency
-P95 / P99 Latency
-Index Build Time
-Index Size
-Memory
-```
+- ANN Recall@K;
+- Relevance Recall@K;
+- mean search latency;
+- median search latency;
+- P95 and P99 latency;
+- index build time;
+- index size;
+- memory.
 
-The central tradeoff becomes:
+The central V2 tradeoff is:
 
-\[
-\boxed{
-ANN\ Recall
-\leftrightarrow
-Search\ Latency
-\leftrightarrow
-Memory
-}
-\]
+**ANN Recall â†” Search Latency â†” Memory**
 
 The V1 exact-neighbor files provide the ground truth required to quantify ANN approximation error.
 
@@ -752,33 +646,15 @@ Research questions include scalability, distributed throughput, resource require
 
 Investigate automatic vector-index configuration.
 
-Potential objectives include:
+Possible optimization objectives include:
 
-\[
-\max Recall(x)
-\]
+- maximize Recall;
+- minimize search latency;
+- minimize memory;
+- minimize index build time;
+- minimize cloud cost.
 
-while minimizing:
-
-\[
-Latency(x)
-\]
-
-\[
-Memory(x)
-\]
-
-\[
-BuildTime(x)
-\]
-
-and:
-
-\[
-Cost(x)
-\]
-
-Possible approaches include:
+Potential approaches include:
 
 - grid search;
 - Bayesian optimization;
@@ -952,22 +828,22 @@ V1 establishes the exact-search reference for the project.
 
 Scaling from 1K to 100K documents produced:
 
-```text
-Corpus size                 100.00Ã—
-Embedding time              108.47Ã—
-Index size                  100.00Ã—
-Mean search latency         110.40Ã—
-P95 search latency          105.34Ã—
-Python RSS                    1.83Ã—
-```
+| Measurement | V1 Scaling |
+|---|---:|
+| Corpus size | **100.00Ã—** |
+| Embedding time | **108.47Ã—** |
+| Index size | **100.00Ã—** |
+| Mean search latency | **110.40Ã—** |
+| P95 search latency | **105.34Ã—** |
+| Python RSS | **1.83Ã—** |
 
 At the same time:
 
-```text
-Recall@1     0.9600 â†’ 0.7333
-Recall@5     0.9967 â†’ 0.9300
-Recall@10    1.0000 â†’ 0.9567
-```
+| Metric | 1K | 100K |
+|---|---:|---:|
+| Recall@1 | 0.9600 | 0.7333 |
+| Recall@5 | 0.9967 | 0.9300 |
+| Recall@10 | 1.0000 | 0.9567 |
 
 The experiments show that exact vector search provides strong retrieval quality but increasingly expensive search as the vector collection grows.
 
